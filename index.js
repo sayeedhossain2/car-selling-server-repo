@@ -39,6 +39,20 @@ async function run() {
       const allCar = await categoriesCollection.find(query).toArray();
       res.send(allCar);
     });
+
+    // carCategories get
+    // app.get("/allProducts", async (req, res) => {
+    //   const query = {};
+    //   const allProduct = await productsCollection.find(query).toArray();
+    //   res.send(allProduct);
+    // });
+
+    // carCategories get by category id
+    app.get("/allProducts/:id", async (req, res) => {
+      const query = { categoryId: parseInt(req.params.id) };
+      const result = await productsCollection.findOne(query);
+      res.send(result);
+    });
   } finally {
   }
 }
