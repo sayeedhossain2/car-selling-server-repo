@@ -30,6 +30,8 @@ async function run() {
     const usersCollection = client.db("carSelling").collection("users");
     // myOrders collection
     const myOrdersCollection = client.db("carSelling").collection("myOrders");
+    // add product collection
+    // const addProductCollection = client.db("carSelling").collection("adProduct");
 
     // carCategories get
     app.get("/carCategories", async (req, res) => {
@@ -53,6 +55,13 @@ async function run() {
       res.send(result);
     });
 
+    //  send add products to db
+    app.post("/allProducts", async (req, res) => {
+      const products = req.body;
+      const result = await productsCollection.insertOne(products);
+      res.send(result);
+    });
+
     // send user information to db
     app.post("/users", async (req, res) => {
       const user = req.body;
@@ -65,6 +74,14 @@ async function run() {
       const myOrder = req.body;
       const result = await myOrdersCollection.insertOne(myOrder);
       res.send(result);
+    });
+
+    // get from myOrders db
+    app.get("/myAllOrders", async (req, res) => {
+      const query = {};
+      const cursor = await myOrdersCollection.find(query).toArray();
+
+      res.send(cursor);
     });
   } finally {
   }
