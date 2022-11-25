@@ -50,7 +50,7 @@ async function run() {
     // carCategories get by category id
     app.get("/allProducts/:id", async (req, res) => {
       const query = { categoryId: parseInt(req.params.id) };
-      const result = await productsCollection.findOne(query);
+      const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
   } finally {
