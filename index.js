@@ -50,7 +50,7 @@ async function run() {
 
     // carCategories get by category id
     app.get("/allProducts/:id", async (req, res) => {
-      const query = { categoryId: parseInt(req.params.id) };
+      const query = { categoryId: req.params.id };
       const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
@@ -82,6 +82,13 @@ async function run() {
       const query = { email: email };
       const myOrders = await myOrdersCollection.find(query).toArray();
       res.send(myOrders);
+
+      app.get("/myProducts", async (req, res) => {
+        const email = req.query.email;
+        const query = { email: email };
+        const myProduct = await productsCollection.find(query).toArray();
+        res.send(myProduct);
+      });
     });
   } finally {
   }
