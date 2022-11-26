@@ -83,6 +83,14 @@ async function run() {
       res.send(result);
     });
 
+    // delete all user
+    app.delete("/sellersDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await usersCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     // get allAdmin information to db
     app.get("/allAdmin", async (req, res) => {
       const query = { role: "admin" };
@@ -90,6 +98,7 @@ async function run() {
       res.send(result);
     });
 
+    // admin check
     app.get("/user/admin/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email };
