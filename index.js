@@ -124,6 +124,14 @@ async function run() {
       res.send({ isAdmin: user?.role == "admin" });
     });
 
+    // sellers check
+    app.get("/users/sellers/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ isSeller: user?.role == "seller" });
+    });
+
     // send myOrders to db
     app.post("/myOrders", async (req, res) => {
       const myOrder = req.body;
