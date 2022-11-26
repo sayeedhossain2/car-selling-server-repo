@@ -69,6 +69,20 @@ async function run() {
       res.send(result);
     });
 
+    // get sellers information to db
+    app.get("/allSellers", async (req, res) => {
+      const query = { role: "seller" };
+      const result = await usersCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // get user information to db
+    app.get("/allUsers", async (req, res) => {
+      const query = { role: "user" };
+      const result = await usersCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // send myOrders to db
     app.post("/myOrders", async (req, res) => {
       const myOrder = req.body;
