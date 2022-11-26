@@ -69,18 +69,32 @@ async function run() {
       res.send(result);
     });
 
-    // get sellers information to db
+    // get allSellers information to db
     app.get("/allSellers", async (req, res) => {
       const query = { role: "seller" };
       const result = await usersCollection.find(query).toArray();
       res.send(result);
     });
 
-    // get user information to db
+    // get allUsers information to db
     app.get("/allUsers", async (req, res) => {
       const query = { role: "user" };
       const result = await usersCollection.find(query).toArray();
       res.send(result);
+    });
+
+    // get allAdmin information to db
+    app.get("/allAdmin", async (req, res) => {
+      const query = { role: "admin" };
+      const result = await usersCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.get("/user/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ isAdmin: user?.role == "admin" });
     });
 
     // send myOrders to db
