@@ -91,7 +91,7 @@ async function run() {
       res.send(result);
     });
 
-    // verified seller
+    // verified seller verify to verified
     app.put("/verifiedStatus/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
@@ -117,7 +117,7 @@ async function run() {
     });
 
     // admin check
-    app.get("/user/admin/:email", async (req, res) => {
+    app.get("/users/admin/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email };
       const user = await usersCollection.findOne(query);
