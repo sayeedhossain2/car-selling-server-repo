@@ -116,7 +116,7 @@ async function run() {
       res.send(result);
     });
 
-    // admin check
+    // admin check is it admin or not
     app.get("/users/admin/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email };
@@ -124,12 +124,20 @@ async function run() {
       res.send({ isAdmin: user?.role == "admin" });
     });
 
-    // sellers check
+    // sellers check is it seller or not
     app.get("/users/sellers/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email };
       const user = await usersCollection.findOne(query);
       res.send({ isSeller: user?.role == "seller" });
+    });
+
+    // user check is it user or not
+    app.get("/users/simpleusers/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ isSimpleuser: user?.role == "user" });
     });
 
     // send myOrders to db
