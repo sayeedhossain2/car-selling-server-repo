@@ -91,6 +91,24 @@ async function run() {
       res.send(result);
     });
 
+    // verified seller
+    app.put("/verifiedStatus/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          verify: true,
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+
     // get allAdmin information to db
     app.get("/allAdmin", async (req, res) => {
       const query = { role: "admin" };
