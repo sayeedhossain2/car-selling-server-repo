@@ -44,6 +44,13 @@ async function run() {
       res.send(allCar);
     });
 
+    app.get("/checkEmail", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
+
     app.post("/allReport", async (req, res) => {
       const repo = req.body;
       const result = await reportCollection.insertOne(repo);
@@ -53,6 +60,22 @@ async function run() {
     app.get("/reportproduct", async (req, res) => {
       const query = {};
       const result = await reportCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // delete from reported db
+    app.delete("/reports/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { reportID: id };
+      const result = await reportCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // delete from product db
+    app.delete("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productsCollection.deleteOne(query);
       res.send(result);
     });
 
