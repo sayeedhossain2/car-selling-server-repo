@@ -30,14 +30,30 @@ async function run() {
     const usersCollection = client.db("carSelling").collection("users");
     // myOrders collection
     const myOrdersCollection = client.db("carSelling").collection("myOrders");
-    // add product collection
-    // const addProductCollection = client.db("carSelling").collection("adProduct");
+    // add product userReport collection
+    const reportCollection = client.db("carSelling").collection("userReport");
+    // add product advertised collection
+    const advertisedCollection = client
+      .db("carSelling")
+      .collection("advertised");
 
     // carCategories get
     app.get("/carCategories", async (req, res) => {
       const query = {};
       const allCar = await categoriesCollection.find(query).toArray();
       res.send(allCar);
+    });
+
+    app.post("/allReport", async (req, res) => {
+      const repo = req.body;
+      const result = await reportCollection.insertOne(repo);
+      res.send(result);
+    });
+
+    app.get("/reportproduct", async (req, res) => {
+      const query = {};
+      const result = await reportCollection.find(query).toArray();
+      res.send(result);
     });
 
     // //   // carCategories get using id
@@ -154,11 +170,24 @@ async function run() {
       const myOrders = await myOrdersCollection.find(query).toArray();
       res.send(myOrders);
 
+      //   get all product use query use
       app.get("/myProducts", async (req, res) => {
         const email = req.query.email;
         const query = { email: email };
         const myProduct = await productsCollection.find(query).toArray();
         res.send(myProduct);
+      });
+      //  advertise item sent db
+      app.post("/advertised", async (req, res) => {
+        const advertise = req.body;
+        const result = await advertisedCollection.insertOne(advertise);
+        res.send(result);
+      });
+
+      app.get("/advertisedItem", async (req, res) => {
+        const query = {};
+        const result = await advertisedCollection.find(query).toArray();
+        res.send(result);
       });
     });
   } finally {
