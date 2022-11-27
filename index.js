@@ -107,6 +107,14 @@ async function run() {
       res.send(result);
     });
 
+    // delete myproduct user
+    app.delete("/myProductDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await productsCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     // verified seller verify to verified
     app.put("/verifiedStatus/:id", async (req, res) => {
       const id = req.params.id;
@@ -185,8 +193,15 @@ async function run() {
       });
 
       app.get("/advertisedItem", async (req, res) => {
-        const query = {};
+        const query = { sold: "available" };
         const result = await advertisedCollection.find(query).toArray();
+        res.send(result);
+      });
+
+      app.get("/myAllOrders/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await myOrdersCollection.findOne(query);
         res.send(result);
       });
     });
