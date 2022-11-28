@@ -251,7 +251,7 @@ async function run() {
         });
       });
 
-      //   send payments data
+      //   send payments data and update pay now button to paid
       app.post("/ProductPayments", async (req, res) => {
         const payment = req.body;
         const result = await paymentsCollection.insertOne(payment);
@@ -269,21 +269,24 @@ async function run() {
           updatedDoc
         );
 
-        // start
-        // const updateDoc = {
-        //   $set: {
-        //     sold: unavailable,
-        //   },
-        // };
-
-        // const updatesResult = await productsCollection.updateOne(
-        //   filter,
-        //   updatedDoc
-        // );
-        // end
-
         res.send(result);
       });
+
+      // start
+      //   const bookid = payment.bookingId;
+      //   const fillter = { _id: ObjectId(productBookingId) };
+      //   const updateDoc = {
+      //     $set: {
+      //       sold: unavailable,
+      //       transactionId: payment.transactionId,
+      //     },
+      //   };
+      //   const updateResults = await productsCollection.updateOne(
+      //     fillter,
+      //     updateDoc
+      //   );
+
+      // end
     });
   } finally {
   }
