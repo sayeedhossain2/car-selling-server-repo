@@ -272,21 +272,22 @@ async function run() {
         res.send(result);
       });
 
-      // start
-      //   const bookid = payment.bookingId;
-      //   const fillter = { _id: ObjectId(productBookingId) };
-      //   const updateDoc = {
-      //     $set: {
-      //       sold: unavailable,
-      //       transactionId: payment.transactionId,
-      //     },
-      //   };
-      //   const updateResults = await productsCollection.updateOne(
-      //     fillter,
-      //     updateDoc
-      //   );
-
-      // end
+      //   app.put("/advertiseId/:id", async (req, res) => {
+      //     const bookid = req.params.id;
+      //     const fillter = { serviceId: bookid };
+      //     const option = { upsert: true };
+      //     const updateDoc = {
+      //       $set: {
+      //         sold: unavailable,
+      //       },
+      //     };
+      //     const updateResults = await advertisedCollection.updateOne(
+      //       fillter,
+      //       updateDoc,
+      //       option
+      //     );
+      //     res.send(updateResults);
+      //   });
     });
   } finally {
   }
