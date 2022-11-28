@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const port = process.env.PORT || 5000;
 
@@ -36,6 +37,7 @@ async function run() {
     const advertisedCollection = client
       .db("carSelling")
       .collection("advertised");
+    const paymentsCollection = client.db("carSelling").collection("payments");
 
     // carCategories get
     app.get("/carCategories", async (req, res) => {
@@ -44,6 +46,7 @@ async function run() {
       res.send(allCar);
     });
 
+    // check user is it verified
     app.get("/checkEmail", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
@@ -51,12 +54,14 @@ async function run() {
       res.send(result);
     });
 
+    // post to db all report
     app.post("/allReport", async (req, res) => {
       const repo = req.body;
       const result = await reportCollection.insertOne(repo);
       res.send(result);
     });
 
+    // get all repoted item
     app.get("/reportproduct", async (req, res) => {
       const query = {};
       const result = await reportCollection.find(query).toArray();
@@ -215,16 +220,68 @@ async function run() {
         res.send(result);
       });
 
+      //   get only available advertise item
       app.get("/advertisedItem", async (req, res) => {
         const query = { sold: "available" };
         const result = await advertisedCollection.find(query).toArray();
         res.send(result);
       });
 
+      //   get my all other using id
       app.get("/myAllOrders/:id", async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
         const result = await myOrdersCollection.findOne(query);
+        res.send(result);
+      });
+
+      //   stripe implement
+      app.post("/create-payment-intent", async (req, res) => {
+        const booking = req.body;
+        const price = booking.price;
+        const amount = price * 100;
+
+        const paymentIntent = await stripe.paymentIntents.create({
+          currency: "usd",
+          amount: amount,
+          payment_method_types: ["card"],
+        });
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      });
+
+      //   send payments data
+      app.post("/ProductPayments", async (req, res) => {
+        const payment = req.body;
+        const result = await paymentsCollection.insertOne(payment);
+
+        const id = payment.bookingId;
+        const filter = { _id: ObjectId(id) };
+        const updatedDoc = {
+          $set: {
+            paid: true,
+            transactionId: payment.transactionId,
+          },
+        };
+        const updateResult = await myOrdersCollection.updateOne(
+          filter,
+          updatedDoc
+        );
+
+        // start
+        // const updateDoc = {
+        //   $set: {
+        //     sold: unavailable,
+        //   },
+        // };
+
+        // const updatesResult = await productsCollection.updateOne(
+        //   filter,
+        //   updatedDoc
+        // );
+        // end
+
         res.send(result);
       });
     });
