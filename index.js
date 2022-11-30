@@ -39,6 +39,30 @@ async function run() {
       .collection("advertised");
     const paymentsCollection = client.db("carSelling").collection("payments");
 
+    app.get("/mypro", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const productall = await productsCollection.find(query).toArray();
+      res.send(productall);
+    });
+
+    /* 
+ app.get("/myProducts", async (req, res) => {
+        const email = req.query.email;
+        const query = { email: email };
+        const myProduct = await productsCollection.find(query).toArray();
+        res.send(myProduct);
+      });
+
+
+*/
+
+    app.get("/adver", async (req, res) => {
+      const query = { sold: "available" };
+      const result = await advertisedCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // carCategories get
     app.get("/carCategories", async (req, res) => {
       const query = {};
@@ -94,10 +118,26 @@ async function run() {
 
     // carCategories get by category id
     app.get("/allProducts/:id", async (req, res) => {
-      const query = { categoryId: req.params.id };
+      const query = {
+        categoryId: req.params.id,
+        sold: "available",
+      };
       const result = await productsCollection.find(query).toArray();
       res.send(result);
     });
+
+    /*  app.post('/bookings', async (req, res) => {
+            const booking = req.body;
+            console.log(booking);
+            const query = {
+                appointmentDate: booking.appointmentDate,
+                email: booking.email,
+                treatment: booking.treatment
+            }
+
+            const alreadyBooked = await bookingsCollection.find(query).toArray();
+      
+       */
 
     //  send add products to db
     app.post("/allProducts", async (req, res) => {
@@ -207,12 +247,13 @@ async function run() {
       res.send(myOrders);
 
       //   get all product use query use
-      app.get("/myProducts", async (req, res) => {
-        const email = req.query.email;
-        const query = { email: email };
-        const myProduct = await productsCollection.find(query).toArray();
-        res.send(myProduct);
-      });
+      // app.get("/myProducts", async (req, res) => {
+      //   const email = req.query.email;
+      //   const query = { email: email };
+      //   const myProduct = await productsCollection.find(query).toArray();
+      //   res.send(myProduct);
+      // });
+
       //  advertise item sent db
       app.post("/advertised", async (req, res) => {
         const advertise = req.body;
@@ -221,11 +262,11 @@ async function run() {
       });
 
       //   get only available advertise item
-      app.get("/advertisedItem", async (req, res) => {
-        const query = { sold: "available" };
-        const result = await advertisedCollection.find(query).toArray();
-        res.send(result);
-      });
+      // app.get("/advertisedItem", async (req, res) => {
+      //   const query = { sold: "available" };
+      //   const result = await advertisedCollection.find(query).toArray();
+      //   res.send(result);
+      // });
 
       //   get my all other using id
       app.get("/myAllOrders/:id", async (req, res) => {
@@ -272,22 +313,61 @@ async function run() {
         res.send(result);
       });
 
-      //   app.put("/advertiseId/:id", async (req, res) => {
-      //     const bookid = req.params.id;
-      //     const fillter = { serviceId: bookid };
-      //     const option = { upsert: true };
-      //     const updateDoc = {
-      //       $set: {
-      //         sold: unavailable,
-      //       },
-      //     };
-      //     const updateResults = await advertisedCollection.updateOne(
-      //       fillter,
-      //       updateDoc,
-      //       option
-      //     );
-      //     res.send(updateResults);
-      //   });
+      app.put("/advertiseId/:id", async (req, res) => {
+        const id = req.params.id;
+        // console.log(id);
+        const filter = { serviceId: id };
+        const options = { upsert: true };
+        const updatedDoc = {
+          $set: {
+            sold: "unavailable",
+          },
+        };
+        const result = await advertisedCollection.updateOne(
+          filter,
+          updatedDoc,
+          options
+        );
+        res.send(result);
+      });
+
+      app.put("/alProductsId/:id", async (req, res) => {
+        const id = req.params.id;
+        // console.log(id);
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        const updatedDoc = {
+          $set: {
+            sold: "unavailable",
+          },
+        };
+        const result = await productsCollection.updateOne(
+          filter,
+          updatedDoc,
+          options
+        );
+        res.send(result);
+      });
+
+      // app.put("/advertiseId/:id", async (req, res) => {
+      //   const bookid = req.params.id;
+      //   // console.log(bookid);
+      //   const fillter = { _id: ObjectId(bookid) };
+      //   const updateUser = req.body;
+      //   console.log(updateUser);
+      //   // const options = { upsert: true };
+      //   // const updateDoc = {
+      //   //   $set: {
+      //   //     sold: unavailable,
+      //   //   },
+      //   // };
+      //   // const updateResults = await advertisedCollection.updateOne(
+      //   //   fillter,
+      //   //   updateDoc,
+      //   //   options
+      //   // );
+      //   // res.send(updateResults);
+      // });
     });
   } finally {
   }
